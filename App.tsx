@@ -1,23 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import RestaurantType from './models/RestaurantType'
+import dummyRestaurantTypes from './dummyData'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
-class RestaurantType {
-  id: string
-  tipo: string
-  image: string
-  constructor(id: string, tipo: string, image: string) {
-    this.id = id
-    this.tipo = tipo
-    this.image = image
-  }
-}
+const Tab = createBottomTabNavigator();
 
-const dummyRestaurantTypes: Array<RestaurantType> = [
-  new RestaurantType("1", "Italiano", require('./assets/italiano.jpg')),
-  new RestaurantType("2", "Griego", require('./assets/griego.jpg')),
-  new RestaurantType("3", "Argentino", require('./assets/argentino.jpg')),
-  new RestaurantType("4", "Peruano", require('./assets/peruano.jpg'))
-]
 
 const renderResturantTypes = ({ item } : { item: RestaurantType}) => {
   return (
@@ -28,12 +18,47 @@ const renderResturantTypes = ({ item } : { item: RestaurantType}) => {
   )
 }
 
-export default function App() {
+const ProfileScreen = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}> Perfil </Text>
+    </View>
+  )
+}
+
+const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}> Restaurantes en tu area </Text>
       <FlatList style={styles.list} data={dummyRestaurantTypes} renderItem={renderResturantTypes} />
     </View>
+  )
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({ focused, size, color}) => {
+          switch (route.name) {
+            case "Home":
+              return <Ionicons name="ios-home" size={size} color={color} />
+            case "Perfil":
+              let iconName = focused ? "ios-person" : "ios-airplane"
+              return <Ionicons name={iconName} size={size} color={color} />
+              return <Ionicons name={iconName} size={size} color={color} />
+          }
+        }
+      })}
+      tabBarOptions={{
+        inactiveTintColor: 'lightgray',
+        activeTintColor: 'rebeccapurple'
+      }}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Perfil" component={ProfileScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
